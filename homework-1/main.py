@@ -1,7 +1,16 @@
+import os
+
 from src.channel import Channel
+
+from googleapiclient.discovery import build
+
+api_key: str = os.getenv("YT_API_KEY")
+
 
 if __name__ == '__main__':
     moscowpython = Channel('UC-OVMPlMA3-YCIeg4z5z23A')
+    youtube = build('youtube', 'v3', developerKey=api_key)
+    moscowpython.channel_info = youtube.channels().list(id=moscowpython.channel_id, part='snippet,statistics').execute()
     moscowpython.print_info()
 
     """
