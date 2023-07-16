@@ -1,12 +1,12 @@
-from src.channel import Channel
+from src.api_mixin import APIMixin
 
 
-class Video:
+class Video(APIMixin):
     """Класс для видео-ролика с ютуб-канала"""
 
     def __init__(self, video_id: str):
         self.__video_id: str = video_id
-        self.video_info = Channel.get_service().videos().list(part='snippet,statistics', id=self.__video_id).execute()
+        self.video_info = self.get_service().videos().list(part='snippet,statistics', id=self.__video_id).execute()
         self.video_title: str = self.video_info['items'][0]['snippet']['title']
         self.video_url: str = 'https://www.youtube.com/watch?v=' + self.__video_id
         self.view_count: int = int(self.video_info['items'][0]['statistics']['viewCount'])

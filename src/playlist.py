@@ -2,17 +2,17 @@ import datetime
 
 import isodate
 
-from src.channel import Channel
+from src.api_mixin import APIMixin
 
 
-class PlayList:
+class PlayList(APIMixin):
 
     def __init__(self, playlist_id: str):
         self.__playlist_id = playlist_id
         # Получаем информацию о плейлисте по его id
-        self.playlist_info = Channel.get_service().playlists().list(id=self.__playlist_id,
-                                                                    part='snippet',
-                                                                    ).execute()
+        self.playlist_info = self.get_service().playlists().list(id=self.__playlist_id,
+                                                                 part='snippet',
+                                                                 ).execute()
         self.title = self.playlist_info['items'][0]['snippet']['title']
         self.url = 'https://www.youtube.com/playlist?list=' + self.__playlist_id
 
@@ -22,16 +22,16 @@ class PlayList:
 
     def get_videos_info_from_playlist(self):
         # Получаем объект, содержащий информацию о видеороликах в плейлисте playlist_id
-        videos = Channel.get_service().playlistItems().list(playlistId=self.playlist_id,
-                                                            part='contentDetails',
-                                                            maxResults=50,
-                                                            ).execute()
+        videos = self.get_service().playlistItems().list(playlistId=self.playlist_id,
+                                                         part='contentDetails',
+                                                         maxResults=50,
+                                                         ).execute()
         # Собираем все id видеороликов из плейлиста в список
         videos_ids: list[str] = [video['contentDetails']['videoId'] for video in videos['items']]
         # Получаем и возвращаем информацию и статистику по видеороликам
-        return Channel.get_service().videos().list(part='contentDetails,statistics',
-                                                   id=','.join(videos_ids)
-                                                   ).execute()
+        return self.get_service().videos().list(part='contentDetails,statistics',
+                                                id=','.join(videos_ids)
+                                                ).execute()
 
     @property
     def total_duration(self):
