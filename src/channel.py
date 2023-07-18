@@ -11,6 +11,7 @@ class Channel(APIMixin):
         Дальше все данные будут подтягиваться по API."""
         self.__channel_id: str = channel_id
         # Получаем данные канала для дальнейшей инициализации класса Channel
+        # channel_info можно убрать из self, но он используется в print_info()
         self.channel_info = \
             self.get_service().channels().list(id=self.__channel_id, part='snippet,statistics').execute()
         # Инициализируем атрибуты класса Channel полученными данными
