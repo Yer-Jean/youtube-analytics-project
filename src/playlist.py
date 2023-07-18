@@ -10,10 +10,8 @@ class PlayList(APIMixin):
     def __init__(self, playlist_id: str):
         self.__playlist_id = playlist_id
         # Получаем информацию о плейлисте по его id
-        self.playlist_info = self.get_service().playlists().list(id=self.__playlist_id,
-                                                                 part='snippet',
-                                                                 ).execute()
-        self.title = self.playlist_info['items'][0]['snippet']['title']
+        playlist_info = self.get_service().playlists().list(id=self.__playlist_id, part='snippet').execute()
+        self.title = playlist_info['items'][0]['snippet']['title']
         self.url = 'https://www.youtube.com/playlist?list=' + self.__playlist_id
 
     @property
