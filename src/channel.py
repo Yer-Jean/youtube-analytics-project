@@ -1,12 +1,10 @@
 import json
-import os
 
-from googleapiclient.discovery import build
+from src.api_mixin import APIMixin
 
 
-class Channel:
+class Channel(APIMixin):
     """Класс для ютуб-канала"""
-    api_key: str = os.getenv("YT_API_KEY")
 
     def __init__(self, channel_id: str) -> None:
         """Экземпляр инициализируется id канала.
@@ -14,7 +12,7 @@ class Channel:
         self.__channel_id: str = channel_id
         # Получаем данные канала для дальнейшей инициализации класса Channel
         self.channel_info = \
-            Channel.get_service().channels().list(id=self.__channel_id, part='snippet,statistics').execute()
+            self.get_service().channels().list(id=self.__channel_id, part='snippet,statistics').execute()
         # Инициализируем атрибуты класса Channel полученными данными
         self.id: str = self.channel_info['items'][0]['id']
         self.title: str = self.channel_info['items'][0]['snippet']['title']
@@ -55,11 +53,6 @@ class Channel:
     @channel_id.setter
     def channel_id(self, new_id: str):
         print(f'\nНельзя изменить значение channel_id на "{new_id}"\n')
-
-    @classmethod
-    def get_service(cls):
-        """Возвращает объект для работы с YouTube API"""
-        return build('youtube', 'v3', developerKey=cls.api_key)
 
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
